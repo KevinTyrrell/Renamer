@@ -18,8 +18,12 @@
 
 from setuptools import setup
 
+
 setup(
     name="renamer",
+    version="1.0.0",
+    author="Kevin Tyrrell",
+    author_email="KevinTearUl@gmail.com",
     entry_points={
         "console_scripts": [
             "renamer = renamer:main"

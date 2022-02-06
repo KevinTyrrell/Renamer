@@ -16,9 +16,23 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
+"""
+TODO: File structure ideas:
+
+
+TODO: Renamer operations:
+* -s shift: increments or decrements the number of each file
+* -i input: changes the pattern of what to search for
+* -f flatten: removes holes in the files so all are consecutive
+* -z zeroes: enables or disables leading zeroes on files
+* -o output: changes the pattern of how to output the file
+* -t tvmode: incorporates seasons into the formatting
+* -c confirm: performs the rename on the files in the directory
+"""
+
 
 def main():
-    pass
+    print("Ran")
 
 
 if __name__ == '__main__':
