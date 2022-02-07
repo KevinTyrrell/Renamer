@@ -19,6 +19,8 @@
 from abc import abstractmethod, ABC
 from typing import List
 
+from util.util import require_non_none
+
 
 class Directory(ABC):
     @abstractmethod
@@ -35,3 +37,16 @@ class Directory(ABC):
         :return: None
         """
         pass
+
+
+class DirDecorator(Directory, ABC):
+    def __init__(self, directory: Directory):
+        """
+         Decorates a directory, adding additional functionality.
+        :param directory: Directory to be decorated.
+        """
+        self.__decorated = require_non_none(directory)
+
+    def operate(self) -> None:
+        # Recursively call the decorated operation.
+        self.__decorated.operate()
