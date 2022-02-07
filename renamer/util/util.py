@@ -16,22 +16,18 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-from abc import abstractmethod, ABC
-from typing import List
+from typing import TypeVar
+
+T = TypeVar("T")
 
 
-class Directory(ABC):
-    @abstractmethod
-    def get_files(self) -> List[str]:
-        """
-        :return: List of files in the directory.
-        """
-        pass
+def require_non_none(param: T) -> T:
+    """
+    Ensures a specified parameter is non-None.
 
-    @abstractmethod
-    def operate(self) -> None:
-        """
-        Performs an operation on the directory.
-        :return: None
-        """
-        pass
+    :param param: Parameter to be checked
+    :return: param
+    """
+    if param is None:
+        raise Exception("Required non-None param was None")
+    return param

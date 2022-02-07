@@ -1,13 +1,13 @@
 import unittest
 
-import renamer
+from directory import Directory
 
 
 class MyTestCase(unittest.TestCase):
     def test_directory(self):
-        renamer.Directory()
-        d = directory()
-        print("Done")
+        d = Directory("C:\\Users\\admin\\Desktop\\Test\\test")
+        print(d)
+        print(d.get_files)
         self.assertEqual(True, True)
 
 

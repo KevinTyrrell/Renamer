@@ -16,22 +16,21 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-from abc import abstractmethod, ABC
-from typing import List
+from abc import ABC
+
+from directory import Directory
+from util.util import require_non_none
 
 
-class Directory(ABC):
-    @abstractmethod
-    def get_files(self) -> List[str]:
+class DirDecorator(Directory, ABC):
+    def __init__(self, directory: Directory):
         """
-        :return: List of files in the directory.
+         Decorates a directory, adding additional functionality.
+        :param directory: Directory to be decorated.
         """
-        pass
+        self.__decorated = require_non_none(directory)
 
-    @abstractmethod
     def operate(self) -> None:
-        """
-        Performs an operation on the directory.
-        :return: None
-        """
-        pass
+        # Recursively call the decorated operation.
+        self.__decorated.operate()
+
