@@ -17,16 +17,19 @@
 """
 
 from abc import abstractmethod, ABC
-from typing import List
+from typing import Dict
+from os import listdir
+from os.path import isdir
 
 from util.util import require_non_none
 
 
 class Directory(ABC):
     @abstractmethod
-    def get_files(self) -> List[str]:
+    def get_files(self) -> Dict[str, object]:
         """
-        :return: List of files in the directory.
+        :rtype: object
+        :return: Relation of filenames to their numerical ordering.
         """
         pass
 
@@ -37,6 +40,19 @@ class Directory(ABC):
         :return: None
         """
         pass
+
+
+class ConcreteDirectory(Directory):
+    def __init__(self, path: str):
+        if not isdir(require_non_none(path)):
+            raise Exception("The following path is not a valid directory: {}".format(path))
+        self.__files = dict.fromkeys(listdir(path), None)
+
+    def get_files(self) -> Dict[str, object]:
+        return self.__files
+
+    def operate(self) -> None:
+        pass  # Sentinel method.
 
 
 class DirDecorator(Directory, ABC):
