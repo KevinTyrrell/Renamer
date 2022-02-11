@@ -1,7 +1,7 @@
 import unittest
 
 from directory import ConcreteDirectory
-from decorators import ShifterDecorator, NumeratedDecorator
+from decorators import ShifterDecorator, NumeratedDecorator, FlattenDecorator
 
 
 class MyTestCase(unittest.TestCase):
@@ -29,6 +29,17 @@ class MyTestCase(unittest.TestCase):
         d = ConcreteDirectory("C:\\Users\\admin\\Desktop\\Test\\test")
         d = NumeratedDecorator(d)
         d.operate()
+
+    def test_flatten_decorator1(self):
+        d = ConcreteDirectory("C:\\Users\\admin\\Desktop\\Test\\test")
+        d = NumeratedDecorator(d)
+        d = FlattenDecorator(d)
+        d.operate()
+        files = d.get_files()
+        sort = sorted(files.values())
+        for i in range(len(files)):
+            self.assertEqual(sort[i] - sort[0], i)
+
 
 
 if __name__ == '__main__':

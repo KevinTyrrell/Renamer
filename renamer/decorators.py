@@ -15,7 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
-from typing import Dict
+from typing import Dict, List, Tuple
 from re import finditer, compile
 
 from directory import Directory
@@ -24,6 +24,15 @@ from util.util import require_non_none
 
 class ShifterDecorator(Directory):
     def __init__(self, decorated: Directory, shift: int):
+        """
+        Decorator which shifts all numerical values in filenames by a specified offset.
+        This decorator is an immediate operation and must be called in-between initialization/terminal operators.
+
+        e.g. 50.mkv -> ShifterDecorator(-5) -> 45.mkv
+
+        :param decorated: Decorated directory.
+        :param shift: int Offset to shift by.
+        """
         self.__decorated = require_non_none(decorated)
         self.__shift = require_non_none(shift)
         if shift == 0:
@@ -33,11 +42,6 @@ class ShifterDecorator(Directory):
         return self.__decorated.get_files()
 
     def operate(self) -> None:
-        """
-        Shifts the numerical value of each file in the directory by a specified amount.
-
-        :return: None
-        """
         self.__decorated.operate()
         shift = self.__shift
         files = self.get_files()
@@ -48,19 +52,51 @@ class ShifterDecorator(Directory):
             files[k] = v + shift
 
 
-class NumeratedDecorator(Directory):
+class FlattenDecorator(Directory):
     def __init__(self, decorated: Directory):
+        """
+        Decorator which flattens the numerical pattern, ensuring all files are consecutive.
+        This decorator is an immediate operation and must be called in-between initialization/terminal operators.
+
+        e.g. [ "15.avi", "24.avi", "101.avi" ] -> [ "15.avi", "16.avi", "17.avi" ]
+
+        :param decorated: Decorated directory.
+        """
         self.__decorated = require_non_none(decorated)
 
     def get_files(self) -> Dict[str, object]:
         return self.__decorated.get_files()
 
     def operate(self) -> None:
-        """
-        Associates all files in a directory with a unique numerical value.
+        self.__decorated.operate()
+        files = self.get_files()
+        if len(files) <= 1:
+            return  # A directory of zero or one files is already flattened
 
-        :return: None
+        sort = sorted(files.items(), key=lambda t: t[1])
+        small = int(sort[0][1])  # Redundant cast
+        for i in range(1, len(files)):  # Skip first (smallest) element
+            e = sort[i]
+            files[e[0]] = small + i
+
+
+class NumeratedDecorator(Directory):
+    def __init__(self, decorated: Directory):
         """
+        Decorator which initializes the numerical pattern according to the filenames in the directory.
+        This decorator is an initialization operation and must be called before other decorators.
+
+        e.g. [ "MyPhoto34HighRes.png", "MyPhoto36HighRes.png" ] ->
+                { "MyPhoto34HighRes.png": 34, "MyPhoto36HighRes.png": 36 }
+
+        :param decorated: Decorated directory.
+        """
+        self.__decorated = require_non_none(decorated)
+
+    def get_files(self) -> Dict[str, object]:
+        return self.__decorated.get_files()
+
+    def operate(self) -> None:
         self.__decorated.operate()
         files = self.get_files()
 

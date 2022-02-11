@@ -21,18 +21,20 @@ TODO: File structure ideas:
 
 
 TODO: Renamer operations:
-* -s shift: increments or decrements the number of each file
-* -i input: changes the pattern of what to search for
 * -f flatten: removes holes in the files so all are consecutive
 * -z zeroes: enables or disables leading zeroes on files
 * -o output: changes the pattern of how to output the file
 * -t tvmode: incorporates seasons into the formatting
 * -c confirm: performs the rename on the files in the directory
+
+TODO: Done
+* -i input: changes the pattern of what to search for
+* -s shift: increments or decrements the number of each file
 """
 
 
 def main():
-    print("Ran")
+    pass
 
 
 if __name__ == '__main__':
