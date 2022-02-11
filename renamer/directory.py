@@ -53,16 +53,3 @@ class ConcreteDirectory(Directory):
 
     def operate(self) -> None:
         pass  # Sentinel method.
-
-
-class DirDecorator(Directory, ABC):
-    def __init__(self, directory: Directory):
-        """
-         Decorates a directory, adding additional functionality.
-        :param directory: Directory to be decorated.
-        """
-        self.__decorated = require_non_none(directory)
-
-    def operate(self) -> None:
-        # Recursively call the decorated operation.
-        self.__decorated.operate()
