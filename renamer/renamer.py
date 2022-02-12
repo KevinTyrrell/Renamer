@@ -18,12 +18,12 @@
 
 """
 TODO: Renamer operations:
-* -o output: changes the pattern of how to output the file
 * -t tvmode: incorporates seasons into the formatting
 * -c confirm: performs the rename on the files in the directory
 * -e extension: changes the extension of the output files
 
 TODO: Done
+* -f format: changes the pattern of how to output the file
 * -i input: changes the pattern of what to search for
 * -s shift: increments or decrements the number of each file
 * -f flatten: removes holes in the files so all are consecutive

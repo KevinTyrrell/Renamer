@@ -2,7 +2,7 @@ import unittest
 import re
 
 from directory import ConcreteDirectory
-from decorators import ShifterDecorator, NumeratedDecorator, FlattenDecorator, ZeroesDecorator, FormatDecorator
+from decorators import ShifterDecorator, NumeratedDecorator, FlattenDecorator, ZeroesDecorator, FormatDecorator, ExtensionDecorator
 
 
 class MyTestCase(unittest.TestCase):
@@ -63,6 +63,14 @@ class MyTestCase(unittest.TestCase):
         files = d.get_files()
         f = next(enumerate(files.values()))[1]
         self.assertTrue(re.match(r"My Test Episode \([0-9]+\)", f))
+
+    def test_ext_decorator1(self):
+        d = ConcreteDirectory("C:\\Users\\admin\\Desktop\\Test\\test")
+        d = NumeratedDecorator(d)
+        d = ExtensionDecorator(d, "jpeg")
+        d.operate()
+        for e in d.get_files().keys():
+            self.assertTrue(e.endswith(".jpeg"))
 
 
 if __name__ == '__main__':

@@ -23,6 +23,35 @@ from directory import Directory
 from util.util import require_non_none
 
 
+class ExtensionDecorator(Directory):
+    def __init__(self, decorated: Directory, ext: str):
+        """
+        Decorator which modifies the file extension of all files in the directory.
+        This decorator is an immediate operation and must be called in-between initialization/terminal operators.
+
+        :param decorated: Decorated directory
+        :param ext: Extension to be set
+        """
+        self.__decorated = require_non_none(decorated)
+        self.__ext = require_non_none(ext)
+
+    def get_files(self) -> Dict[str, object]:
+        return self.__decorated.get_files()
+
+    def operate(self) -> None:
+        self.__decorated.operate()
+        files, ext = self.get_files(), self.__ext
+        pattern = compile(r"(^.*)\.[^.]+$")
+
+        for k, v in files.copy().items():  # Forced to copy to avoid mutate while iterating exception
+            p = pattern.match(k)
+            if p is None:
+                raise Exception("ExtensionDecorator found file with no extension: " + k)
+            name = p.group(1)  # Collect capture group
+            del files[k]
+            files[name + "." + ext] = v
+
+
 class FormatDecorator(Directory):
     def __init__(self, decorated: Directory, fmt: str):
         """
