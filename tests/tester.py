@@ -1,7 +1,7 @@
 import unittest
 
 from directory import ConcreteDirectory
-from decorators import ShifterDecorator, NumeratedDecorator, FlattenDecorator
+from decorators import ShifterDecorator, NumeratedDecorator, FlattenDecorator, ZeroesDecorator
 
 
 class MyTestCase(unittest.TestCase):
@@ -40,6 +40,14 @@ class MyTestCase(unittest.TestCase):
         for i in range(len(files)):
             self.assertEqual(sort[i] - sort[0], i)
 
+    def test_zeroes_decorator1(self):
+        d = ConcreteDirectory("C:\\Users\\admin\\Desktop\\Test\\test")
+        d = NumeratedDecorator(d)
+        d = ZeroesDecorator(d, 3)
+        d.operate()
+        files = d.get_files()
+        sort = sorted(files.values())
+        self.assertEqual(sort[0], "007")
 
 
 if __name__ == '__main__':

@@ -15,11 +15,44 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
-from typing import Dict, List, Tuple
+from typing import Dict
 from re import finditer, compile
+from math import log, ceil
 
 from directory import Directory
 from util.util import require_non_none
+
+
+class ZeroesDecorator(Directory):
+    def __init__(self, decorated: Directory, digits: int = 0):
+        """
+        Decorator which inserts leading zeroes preceding the numerical value.
+        This decorator is an post-immediate operation and must be called in-between immediate/terminal operators.
+
+
+        :param decorated: Decorated directory
+        :param digits: Number of desired digits for the numerical value (0 for automatic)
+        """
+        self.__decorated = require_non_none(decorated)
+        self.__digits = require_non_none(digits)
+
+    def get_files(self) -> Dict[str, object]:
+        return self.__decorated.get_files()
+
+    def operate(self) -> None:
+        self.__decorated.operate()
+        files: Dict[str, int] = self.get_files()
+        digits = max(self.__digits, self.__count_digits(max(files.values())))
+        for k, v in files.items():
+            files[k] = (digits - self.__count_digits(v)) * "0" + str(v)
+
+    @staticmethod
+    def __count_digits(num: int):
+        """
+        :param num: Number to count digits of.
+        :return: Number of digits present.
+        """
+        return int(ceil(log(num + 1, 10)))
 
 
 class ShifterDecorator(Directory):
@@ -30,8 +63,8 @@ class ShifterDecorator(Directory):
 
         e.g. 50.mkv -> ShifterDecorator(-5) -> 45.mkv
 
-        :param decorated: Decorated directory.
-        :param shift: int Offset to shift by.
+        :param decorated: Decorated directory
+        :param shift: int Offset to shift by
         """
         self.__decorated = require_non_none(decorated)
         self.__shift = require_non_none(shift)
@@ -45,7 +78,7 @@ class ShifterDecorator(Directory):
         self.__decorated.operate()
         shift = self.__shift
         files = self.get_files()
-        v: int  # Treat raw object values as int-type.
+        v: int  # Treat raw object values as int-type
         for k, v in files.items():
             if v is None:
                 raise Exception("ShiftDecorator cannot be applied until file numbers have been initialized")
@@ -60,7 +93,7 @@ class FlattenDecorator(Directory):
 
         e.g. [ "15.avi", "24.avi", "101.avi" ] -> [ "15.avi", "16.avi", "17.avi" ]
 
-        :param decorated: Decorated directory.
+        :param decorated: Decorated directory
         """
         self.__decorated = require_non_none(decorated)
 
@@ -89,7 +122,7 @@ class NumeratedDecorator(Directory):
         e.g. [ "MyPhoto34HighRes.png", "MyPhoto36HighRes.png" ] ->
                 { "MyPhoto34HighRes.png": 34, "MyPhoto36HighRes.png": 36 }
 
-        :param decorated: Decorated directory.
+        :param decorated: Decorated directory
         """
         self.__decorated = require_non_none(decorated)
 
@@ -104,11 +137,11 @@ class NumeratedDecorator(Directory):
         model = next(it)[1]  # Select one file to use as the 'model' for the directory
         regexp = "([0-9]+)"
 
-        # Map of indexes which start runs of integers --> the value of those integers.
+        # Map of indexes which start runs of integers --> the value of those integers
         model_ixs = {m.start(): int(model[m.start():m.end()]) for m in finditer(regexp, model)}
         target_ixs = {}
 
-        for e in it:  # Find numerical differences between the model and this file.
+        for e in it:  # Find numerical differences between the model and this file
             ixs = {m.start(): int(e[1][m.start():m.end()]) for m in finditer(regexp, e[1])}
             for k, v in ixs.items():
                 # Determine what integers the two file names do not have in common
