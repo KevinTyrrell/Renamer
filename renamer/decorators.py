@@ -23,12 +23,40 @@ from directory import Directory
 from util.util import require_non_none
 
 
+class FormatDecorator(Directory):
+    def __init__(self, decorated: Directory, fmt: str):
+        """
+        Decorator which modifies the output filename into a specified format.
+        This decorator is a post-immediate operation and must be called in-between immediate/terminal operators.
+
+        The format string MUST contain a '%d' specifier, designated for the numerical pattern.
+        e.g. [4.doc, 5.doc] -> FormatDecorator("Homework (%d)") -> [Homework (4).doc, Homework (5).doc]
+
+        :param decorated: Decorated directory
+        :param fmt: Format to be applied to the output file
+        """
+        self.__decorated = require_non_none(decorated)
+        self.__fmt = require_non_none(fmt)
+        if "%d" not in fmt:
+            raise ValueError("FormatDecorator '%d' specifier was not found in format: " + fmt)
+
+    def get_files(self) -> Dict[str, object]:
+        return self.__decorated.get_files()
+
+    def operate(self) -> None:
+        self.__decorated.operate()
+        files, fmt = self.get_files(), self.__fmt
+        for k, v in files.items():
+            files[k] = fmt.replace("%d", str(v))
+
+
 class ZeroesDecorator(Directory):
     def __init__(self, decorated: Directory, digits: int = 0):
         """
         Decorator which inserts leading zeroes preceding the numerical value.
-        This decorator is an post-immediate operation and must be called in-between immediate/terminal operators.
+        This decorator is a post-immediate operation and must be called in-between immediate/terminal operators.
 
+        e.g. [7.png, 300.png] -> ZeroesDecorator(3) -> [007.png, 300.png]
 
         :param decorated: Decorated directory
         :param digits: Number of desired digits for the numerical value (0 for automatic)
@@ -61,7 +89,7 @@ class ShifterDecorator(Directory):
         Decorator which shifts all numerical values in filenames by a specified offset.
         This decorator is an immediate operation and must be called in-between initialization/terminal operators.
 
-        e.g. 50.mkv -> ShifterDecorator(-5) -> 45.mkv
+        e.g. [50.mkv] -> ShifterDecorator(-5) -> [45.mkv]
 
         :param decorated: Decorated directory
         :param shift: int Offset to shift by

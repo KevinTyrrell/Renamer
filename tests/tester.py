@@ -1,7 +1,8 @@
 import unittest
+import re
 
 from directory import ConcreteDirectory
-from decorators import ShifterDecorator, NumeratedDecorator, FlattenDecorator, ZeroesDecorator
+from decorators import ShifterDecorator, NumeratedDecorator, FlattenDecorator, ZeroesDecorator, FormatDecorator
 
 
 class MyTestCase(unittest.TestCase):
@@ -48,6 +49,20 @@ class MyTestCase(unittest.TestCase):
         files = d.get_files()
         sort = sorted(files.values())
         self.assertEqual(sort[0], "007")
+
+    def test_format_decorator1(self):
+        d = ConcreteDirectory("C:\\Users\\admin\\Desktop\\Test\\test")
+        d = NumeratedDecorator(d)
+        self.assertRaises(ValueError, lambda: FormatDecorator(d, "%s"))
+
+    def test_format_decorator2(self):
+        d = ConcreteDirectory("C:\\Users\\admin\\Desktop\\Test\\test")
+        d = NumeratedDecorator(d)
+        d = FormatDecorator(d, "My Test Episode (%d)")
+        d.operate()
+        files = d.get_files()
+        f = next(enumerate(files.values()))[1]
+        self.assertTrue(re.match(r"My Test Episode \([0-9]+\)", f))
 
 
 if __name__ == '__main__':
