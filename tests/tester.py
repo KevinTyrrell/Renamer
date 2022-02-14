@@ -1,3 +1,21 @@
+"""
+    CLI tool written in Python 3 used to systemically rename files in a directory while adhering to a variety of criteria.
+    Copyright (C) 2022  Kevin Tyrrell
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
+
 import unittest
 import re
 
@@ -48,7 +66,7 @@ class MyTestCase(unittest.TestCase):
         d.operate()
         files = d.get_files()
         sort = sorted(files.values())
-        self.assertEqual(sort[0], "007")
+        self.assertEqual(len(sort[0]), 3)
 
     def test_format_decorator1(self):
         d = ConcreteDirectory("C:\\Users\\admin\\Desktop\\Test\\test")
@@ -71,6 +89,14 @@ class MyTestCase(unittest.TestCase):
         d.operate()
         for e in d.get_files().keys():
             self.assertTrue(e.endswith(".jpeg"))
+
+    def test_directory_save1(self):
+        a = ConcreteDirectory("C:\\Users\\admin\\Desktop\\Test\\test")
+        d = NumeratedDecorator(a)
+        d = ShifterDecorator(d, 1)
+        d = ExtensionDecorator(d, "jpeg")
+        d.operate()
+        a.save_files()
 
 
 if __name__ == '__main__':

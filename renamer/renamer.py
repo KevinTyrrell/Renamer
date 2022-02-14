@@ -20,7 +20,6 @@
 TODO: Renamer operations:
 * -t tvmode: incorporates seasons into the formatting
 * -c confirm: performs the rename on the files in the directory
-* -e extension: changes the extension of the output files
 
 TODO: Done
 * -f format: changes the pattern of how to output the file
@@ -28,6 +27,7 @@ TODO: Done
 * -s shift: increments or decrements the number of each file
 * -f flatten: removes holes in the files so all are consecutive
 * -z zeroes: enables or disables leading zeroes on files
+* -e extension: changes the extension of the output files
 """
 
 
