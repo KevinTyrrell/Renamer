@@ -18,8 +18,8 @@
 
 from abc import abstractmethod, ABC
 from typing import Dict
-from os import listdir
-from os.path import isdir
+from os import listdir, rename
+from os.path import isdir, join
 from re import compile
 
 from util.util import require_non_none
@@ -46,7 +46,8 @@ class Directory(ABC):
 
 class ConcreteDirectory(Directory):
     def __init__(self, path: str):
-        if not isdir(require_non_none(path)):
+        self.__path = require_non_none(path)
+        if not isdir(path):
             raise Exception("The following path is not a valid directory: {}".format(path))
         self.__files = dict.fromkeys(listdir(path), None)
 
@@ -59,6 +60,7 @@ class ConcreteDirectory(Directory):
         :return: None
         """
         files = self.__files
+        print(files)
         for e in files.values():
             if e is None:
                 raise Exception("Directory cannot save files when no changes have been made")
@@ -81,6 +83,10 @@ class ConcreteDirectory(Directory):
 
         print(operations)
 
+        # TODO: MASSIVE PROBLEM
+        # TODO: Changing file extension removes access to the file name handle
+
+
         for k, v in operations.items():
             if v not in operations:
                 renamable.append(k)
@@ -89,6 +95,7 @@ class ConcreteDirectory(Directory):
         while len(renamable) > 0:
             op = renamable.pop()
             print("Renaming '{}' -> '{}'".format(op, operations[op]))
+            rename(join(self.__path, op), join(self.__path, operations[op]))
             if op in conflicts:
                 renamable.append(conflicts[op])
                 del conflicts[op]

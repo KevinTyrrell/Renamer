@@ -24,6 +24,18 @@ from directory import Directory
 from util.util import require_non_none
 
 
+# TODO: New format -- Dictionary values will now be objects allowing for more flexibility
+"""
+{
+    name: "af;klahr.jpeg"
+    num: 51
+    fnum: 051
+    ext: ".jpeg"
+    format: "%d"
+}
+"""
+
+
 class ExtensionDecorator(Directory):
     def __init__(self, decorated: Directory, ext: str):
         """
@@ -44,7 +56,7 @@ class ExtensionDecorator(Directory):
         files, ext = self.get_files(), self.__ext
         pattern = compile(r"(^.*)\.[^.]+$")
 
-        for k, v in files.copy().items():  # Forced to copy to avoid mutate while iterating exception
+        for k, v in files.items():
             p = pattern.match(k)
             if p is None:
                 raise Exception("ExtensionDecorator found file with no extension: " + k)
