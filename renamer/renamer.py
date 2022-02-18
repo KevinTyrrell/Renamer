@@ -19,7 +19,7 @@
 from argparse import ArgumentParser
 
 import decorators as de
-from directory import ConcreteDirectory, FileMetadata
+from directory import ConcreteDirectory
 
 
 def main():
@@ -65,6 +65,6 @@ def main():
     if args.confirm:
         directory.save_files()
 
-        
+
 if __name__ == '__main__':
     main()
