@@ -35,7 +35,7 @@ class FileMetadata:
 
         The following metadata is tracked:
         * name: Original filename with extension
-        * fmt: Output format of the file, which must contain '%d' (file number)
+        * fmt: Output format of the file, which must contain '$d' (file number)
         * num: File number (unknown during initialization)
         * fnum: Formatted number, used to override 'num'
         * ext: Extension of the file

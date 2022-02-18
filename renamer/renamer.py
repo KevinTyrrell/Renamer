@@ -30,18 +30,18 @@ def main():
     # Optional arguments
     args.add_argument("-s", "--shift", dest="shift", type=int,
                       help="Shifts all numerical values in filenames by a specified (neg/pos) offset")
-    args.add_argument("-f", "--format", dest="format", type=str,
-                      help="Output format of the filename, containing '%d' format specifier for the numerical pattern")
-    args.add_argument("-c", "--consecutive", dest="consecutive", action="store_true",
-                      help="Modifies numerical values in filenames such that the values are consecutive")
-    args.add_argument("-z", "--zeroes", dest="zeroes", type=int,
+    args.add_argument("-z", dest="zeroes", type=int,
                       help="Number of maximum leading zeroes to format numerical values (0 for automatic)")
+    args.add_argument("-f", "--fmt", dest="fmt", type=str,
+                      help="Output format of the filename, containing '$d' format specifier for the numerical pattern")
     args.add_argument("-e", "--ext", dest="ext", type=str,
                       help="Replaces the extension of files in the directory with a specified extension")
+    args.add_argument("-c", "--consecutive", dest="consecutive", action="store_true",
+                      help="Modifies numerical values in filenames such that the values are consecutive")
     args.add_argument("-m", "--mute", dest="mute", action="store_false",
                       help="Squelches the console output of filenames and their renamed filename")
     args.add_argument("-y", "--yes", dest="confirm", action="store_true",
-                      help="Confirms the operation and makes changes to your filesystem according to the parameters")
+                      help="Confirms the operation and makes changes to your file system according to the parameters")
     args = args.parse_args()
 
     # Process arguments
@@ -49,8 +49,8 @@ def main():
     dec = de.NumeratedDecorator(directory)
     if args.shift:
         dec = de.ShifterDecorator(dec, args.shift)
-    if args.format:
-        dec = de.FormatDecorator(dec, args.format)
+    if args.fmt:
+        dec = de.FormatDecorator(dec, args.fmt)
     if args.consecutive:
         dec = de.FlattenDecorator(dec)
     if args.zeroes:
@@ -60,7 +60,7 @@ def main():
     dec.operate()  # Perform operations according to decorators
 
     if args.mute:
-        for old, new in directory.get_files():
+        for old, new in sorted(directory.get_files().items(), key=lambda x: x[1].num):
             print("Renaming [{}] --> [{}]".format(old, str(new)))
     if args.confirm:
         directory.save_files()

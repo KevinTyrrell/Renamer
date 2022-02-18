@@ -50,8 +50,8 @@ class FormatDecorator(Directory):
         """
         Decorator which modifies the output filename into a specified format
 
-        The format string must contain a '%d' specifier, designated for the numerical pattern.
-        e.g. [4.doc, 5.doc] -> FormatDecorator("Homework (%d)") -> [Homework (4).doc, Homework (5).doc]
+        The format string must contain a '$d' specifier, designated for the numerical pattern.
+        e.g. [4.doc, 5.doc] -> FormatDecorator("Homework ($d)") -> [Homework (4).doc, Homework (5).doc]
 
         :param decorated: Decorated directory
         :param fmt: Format to be applied to the output file
