@@ -153,8 +153,9 @@ class ConcreteDirectory(Directory):
                 conflicts[v] = k
         while len(performable) > 0:
             op = performable.pop()
-            print("Renaming '{}' -> '{}'".format(op, operations[op]))
-            # rename(join(self.__path, op), join(self.__path, operations[op]))
+            p1 = join(self.__path, op)
+            p2 = join(self.__path, operations[op])
+            rename(p1, p2)
             if op in conflicts:
                 performable.append(conflicts[op])
                 del conflicts[op]

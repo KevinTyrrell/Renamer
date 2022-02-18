@@ -192,16 +192,16 @@ class NumeratedDecorator(Directory):
             break  # No need to check the entire file list
 
         if len(target_ixs) > 1:
-            raise Exception("NumeratedDecorator: A numerated pattern could not be differentiated: ", target_ixs)
+            raise Exception("A numerated pattern could not be differentiated: ", target_ixs)
         if len(target_ixs) <= 0:
-            raise Exception("NumeratedDecorator: A numerated pattern does not exist in the directory")
+            raise Exception("A numerated pattern is not present in the directory")
         target_ixs = next(enumerate(target_ixs.keys()))[1]
         regexp = compile(regexp)
 
         def parse_file_name(filename: str) -> int:
             match = regexp.match(filename, target_ixs)
             if not match:
-                raise Exception("NumeratedDecorator: A numerated pattern does not exist in the directory")
+                raise Exception("File does not contain a numerical index: " + filename)
             return int(match.group(0))
         for k, v in files.items():
             v.num = parse_file_name(k)

@@ -96,7 +96,6 @@ class MyTestCase(unittest.TestCase):
         a = ConcreteDirectory("C:\\Users\\admin\\Desktop\\Test\\test")
         d = NumeratedDecorator(a)
         d = ShifterDecorator(d, 1)
-        d = ExtensionDecorator(d, "jpeg")
         d.operate()
         a.save_files()
 
