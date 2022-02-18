@@ -61,7 +61,7 @@ def main():
 
     if args.mute:
         for old, new in sorted(directory.get_files().items(), key=lambda x: x[1].num):
-            print("Renaming [{}] --> [{}]".format(old, str(new)))
+            print("Renaming [{}]\n\t--> [{}]".format(old, str(new)))
     if args.confirm:
         directory.save_files()
 
