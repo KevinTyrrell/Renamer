@@ -55,9 +55,9 @@ class MyTestCase(unittest.TestCase):
         d = FlattenDecorator(d)
         d.operate()
         files = d.get_files()
-        sort = sorted(files.values())
+        sort = sorted(files.values(), key=lambda x: x.num)
         for i in range(len(files)):
-            self.assertEqual(sort[i] - sort[0], i)
+            self.assertEqual(sort[i].num - sort[0].num, i)
 
     def test_zeroes_decorator1(self):
         d = ConcreteDirectory("C:\\Users\\admin\\Desktop\\Test\\test")
@@ -65,13 +65,14 @@ class MyTestCase(unittest.TestCase):
         d = ZeroesDecorator(d, 3)
         d.operate()
         files = d.get_files()
-        sort = sorted(files.values())
-        self.assertEqual(len(sort[0]), 3)
+        sort = sorted(files.values(), key=lambda x: x.num)
+        self.assertEqual(len(sort[0].fnum), 3)
 
     def test_format_decorator1(self):
         d = ConcreteDirectory("C:\\Users\\admin\\Desktop\\Test\\test")
         d = NumeratedDecorator(d)
-        self.assertRaises(ValueError, lambda: FormatDecorator(d, "%s"))
+        d = FormatDecorator(d, "%s")
+        self.assertRaises(ValueError, lambda: d.operate())
 
     def test_format_decorator2(self):
         d = ConcreteDirectory("C:\\Users\\admin\\Desktop\\Test\\test")
@@ -79,7 +80,8 @@ class MyTestCase(unittest.TestCase):
         d = FormatDecorator(d, "My Test Episode (%d)")
         d.operate()
         files = d.get_files()
-        f = next(enumerate(files.values()))[1]
+        f = next(enumerate(files.values()))
+        f: str = str(f[1])
         self.assertTrue(re.match(r"My Test Episode \([0-9]+\)", f))
 
     def test_ext_decorator1(self):
@@ -87,14 +89,14 @@ class MyTestCase(unittest.TestCase):
         d = NumeratedDecorator(d)
         d = ExtensionDecorator(d, "jpeg")
         d.operate()
-        for e in d.get_files().keys():
-            self.assertTrue(e.endswith(".jpeg"))
+        for e in d.get_files().values():
+            self.assertTrue(str(e).endswith(".jpeg"))
 
     def test_directory_save1(self):
         a = ConcreteDirectory("C:\\Users\\admin\\Desktop\\Test\\test")
         d = NumeratedDecorator(a)
         d = ShifterDecorator(d, 1)
-        #d = ExtensionDecorator(d, "jpeg")
+        d = ExtensionDecorator(d, "jpeg")
         d.operate()
         a.save_files()
 

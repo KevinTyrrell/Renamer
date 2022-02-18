@@ -91,7 +91,7 @@ class FileMetadata:
 
     @ext.setter
     def ext(self, ext: str) -> None:
-        self.__ext = require_non_none(str)
+        self.__ext = require_non_none(ext)
 
     def __str__(self) -> str:
         """
@@ -104,7 +104,7 @@ class FileMetadata:
 
 class Directory(ABC):
     @abstractmethod
-    def get_files(self) -> Dict[str, object]:
+    def get_files(self) -> Dict[str, FileMetadata]:
         """
         :rtype: object
         :return: Relation of filenames to their numerical ordering.
@@ -125,8 +125,8 @@ class ConcreteDirectory(Directory):
     def __init__(self, path: str):
         self.__path = require_non_none(path)
         if not isdir(path):
-            raise Exception("The following path is not a valid directory: {}".format(path))
-        self.__files = dict.fromkeys(listdir(path), None)
+            raise Exception("Path is not a valid directory: {}".format(path))
+        self.__files = {e: FileMetadata(e) for e in listdir(path)}
 
     def save_files(self) -> None:
         """
@@ -136,48 +136,30 @@ class ConcreteDirectory(Directory):
 
         :return: None
         """
-        files = self.__files
-        print(files)
-        for e in files.values():
-            if e is None:
-                raise Exception("Directory cannot save files when no changes have been made")
-        pattern = compile(r"^.*\.([^.]+)$")
-        operations = {}
-        for k, v in files.items():
-            p = pattern.match(k)
-            if p is None:
-                raise Exception("Directory found file with no extension: " + k)
-            # Assign all filenames their respective extensions.
-            operations[k] = str(v) + "." + p.group(1)
 
         """
         Determine the correct order to rename files such that no rename conflicts arise.
         1st Pass: Classify operations as either conflict-free or waiting on another operation.
         2nd Pass: Pop safe operations -> update status of operations that were waiting on them.
         """
-        renamable = []  # Rename operations which can be performed without conflicts.
+        operations = {k: str(v) for (k, v) in self.__files.items()}
+        performable = []  # Rename operations which can be performed without conflicts.
         conflicts = {}  # Rename operations that wait on another rename operation.
-
-        print(operations)
-
-        # TODO: MASSIVE PROBLEM
-        # TODO: Changing file extension removes access to the file name handle
-
 
         for k, v in operations.items():
             if v not in operations:
-                renamable.append(k)
+                performable.append(k)
             else:
                 conflicts[v] = k
-        while len(renamable) > 0:
-            op = renamable.pop()
+        while len(performable) > 0:
+            op = performable.pop()
             print("Renaming '{}' -> '{}'".format(op, operations[op]))
-            rename(join(self.__path, op), join(self.__path, operations[op]))
+            # rename(join(self.__path, op), join(self.__path, operations[op]))
             if op in conflicts:
-                renamable.append(conflicts[op])
+                performable.append(conflicts[op])
                 del conflicts[op]
 
-    def get_files(self) -> Dict[str, object]:
+    def get_files(self) -> Dict[str, FileMetadata]:
         return self.__files
 
     def operate(self) -> None:

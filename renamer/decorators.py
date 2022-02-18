@@ -20,18 +20,14 @@ from typing import Dict
 from re import finditer, compile
 from math import log, ceil
 
-from directory import Directory
+from directory import Directory, FileMetadata
 from util.util import require_non_none
-
-
-
 
 
 class ExtensionDecorator(Directory):
     def __init__(self, decorated: Directory, ext: str):
         """
-        Decorator which modifies the file extension of all files in the directory.
-        This decorator is an immediate operation and must be called in-between initialization/terminal operators.
+        Decorator which modifies the file extension of all files in the directory
 
         :param decorated: Decorated directory
         :param ext: Extension to be set
@@ -39,30 +35,22 @@ class ExtensionDecorator(Directory):
         self.__decorated = require_non_none(decorated)
         self.__ext = require_non_none(ext)
 
-    def get_files(self) -> Dict[str, object]:
+    def get_files(self) -> Dict[str, FileMetadata]:
         return self.__decorated.get_files()
 
     def operate(self) -> None:
         self.__decorated.operate()
         files, ext = self.get_files(), self.__ext
-        pattern = compile(r"(^.*)\.[^.]+$")
-
         for k, v in files.items():
-            p = pattern.match(k)
-            if p is None:
-                raise Exception("ExtensionDecorator found file with no extension: " + k)
-            name = p.group(1)  # Collect capture group
-            del files[k]
-            files[name + "." + ext] = v
+            v.ext = ext
 
 
 class FormatDecorator(Directory):
     def __init__(self, decorated: Directory, fmt: str):
         """
-        Decorator which modifies the output filename into a specified format.
-        This decorator is a post-immediate operation and must be called in-between immediate/terminal operators.
+        Decorator which modifies the output filename into a specified format
 
-        The format string MUST contain a '%d' specifier, designated for the numerical pattern.
+        The format string must contain a '%d' specifier, designated for the numerical pattern.
         e.g. [4.doc, 5.doc] -> FormatDecorator("Homework (%d)") -> [Homework (4).doc, Homework (5).doc]
 
         :param decorated: Decorated directory
@@ -70,24 +58,21 @@ class FormatDecorator(Directory):
         """
         self.__decorated = require_non_none(decorated)
         self.__fmt = require_non_none(fmt)
-        if "%d" not in fmt:
-            raise ValueError("FormatDecorator '%d' specifier was not found in format: " + fmt)
 
-    def get_files(self) -> Dict[str, object]:
+    def get_files(self) -> Dict[str, FileMetadata]:
         return self.__decorated.get_files()
 
     def operate(self) -> None:
         self.__decorated.operate()
         files, fmt = self.get_files(), self.__fmt
         for k, v in files.items():
-            files[k] = fmt.replace("%d", str(v))
+            v.fmt = fmt
 
 
 class ZeroesDecorator(Directory):
     def __init__(self, decorated: Directory, digits: int = 0):
         """
-        Decorator which inserts leading zeroes preceding the numerical value.
-        This decorator is a post-immediate operation and must be called in-between immediate/terminal operators.
+        Decorator which inserts leading zeroes preceding the numerical value
 
         e.g. [7.png, 300.png] -> ZeroesDecorator(3) -> [007.png, 300.png]
 
@@ -97,21 +82,22 @@ class ZeroesDecorator(Directory):
         self.__decorated = require_non_none(decorated)
         self.__digits = require_non_none(digits)
 
-    def get_files(self) -> Dict[str, object]:
+    def get_files(self) -> Dict[str, FileMetadata]:
         return self.__decorated.get_files()
 
     def operate(self) -> None:
         self.__decorated.operate()
-        files: Dict[str, int] = self.get_files()
-        digits = max(self.__digits, self.__count_digits(max(files.values())))
+        files = self.get_files()
+        large = max(map(lambda x: x.num, files.values()))
+        digits = max(self.__digits, self.__count_digits(large))
         for k, v in files.items():
-            files[k] = (digits - self.__count_digits(v)) * "0" + str(v)
+            v.fnum = (digits - self.__count_digits(v.num)) * "0" + str(v.num)
 
     @staticmethod
     def __count_digits(num: int):
         """
-        :param num: Number to count digits of.
-        :return: Number of digits present.
+        :param num: Number to count digits of
+        :return: Number of digits present
         """
         return int(ceil(log(num + 1, 10)))
 
@@ -119,8 +105,7 @@ class ZeroesDecorator(Directory):
 class ShifterDecorator(Directory):
     def __init__(self, decorated: Directory, shift: int):
         """
-        Decorator which shifts all numerical values in filenames by a specified offset.
-        This decorator is an immediate operation and must be called in-between initialization/terminal operators.
+        Decorator which shifts all numerical values in filenames by a specified offset
 
         e.g. [50.mkv] -> ShifterDecorator(-5) -> [45.mkv]
 
@@ -130,27 +115,22 @@ class ShifterDecorator(Directory):
         self.__decorated = require_non_none(decorated)
         self.__shift = require_non_none(shift)
         if shift == 0:
-            raise ValueError("File shift of 0 is invalid")
+            raise ValueError("File number shift is invalid: " + shift)
 
-    def get_files(self) -> Dict[str, object]:
+    def get_files(self) -> Dict[str, FileMetadata]:
         return self.__decorated.get_files()
 
     def operate(self) -> None:
         self.__decorated.operate()
-        shift = self.__shift
-        files = self.get_files()
-        v: int  # Treat raw object values as int-type
+        files, shift = self.get_files(), self.__shift
         for k, v in files.items():
-            if v is None:
-                raise Exception("ShiftDecorator cannot be applied until file numbers have been initialized")
-            files[k] = v + shift
+            v.num = v.num + shift
 
 
 class FlattenDecorator(Directory):
     def __init__(self, decorated: Directory):
         """
-        Decorator which flattens the numerical pattern, ensuring all files are consecutive.
-        This decorator is an immediate operation and must be called in-between initialization/terminal operators.
+        Decorator which flattens the numerical pattern, ensuring all files are consecutive
 
         e.g. [ "15.avi", "24.avi", "101.avi" ] -> [ "15.avi", "16.avi", "17.avi" ]
 
@@ -158,7 +138,7 @@ class FlattenDecorator(Directory):
         """
         self.__decorated = require_non_none(decorated)
 
-    def get_files(self) -> Dict[str, object]:
+    def get_files(self) -> Dict[str, FileMetadata]:
         return self.__decorated.get_files()
 
     def operate(self) -> None:
@@ -167,11 +147,12 @@ class FlattenDecorator(Directory):
         if len(files) <= 1:
             return  # A directory of zero or one files is already flattened
 
-        sort = sorted(files.items(), key=lambda t: t[1])
-        small = int(sort[0][1])  # Redundant cast
+        sort = sorted(files.items(), key=lambda t: t[1].num)
+        first: FileMetadata = sort[0][1]
+        small = int(first.num)  # Redundant cast
         for i in range(1, len(files)):  # Skip first (smallest) element
-            e = sort[i]
-            files[e[0]] = small + i
+            v: FileMetadata = sort[i][1]
+            v.num = small + i
 
 
 class NumeratedDecorator(Directory):
@@ -187,7 +168,7 @@ class NumeratedDecorator(Directory):
         """
         self.__decorated = require_non_none(decorated)
 
-    def get_files(self) -> Dict[str, object]:
+    def get_files(self) -> Dict[str, FileMetadata]:
         return self.__decorated.get_files()
 
     def operate(self) -> None:
@@ -217,10 +198,10 @@ class NumeratedDecorator(Directory):
         target_ixs = next(enumerate(target_ixs.keys()))[1]
         regexp = compile(regexp)
 
-        def parse_file_name(filename: str):
+        def parse_file_name(filename: str) -> int:
             match = regexp.match(filename, target_ixs)
             if not match:
                 raise Exception("NumeratedDecorator: A numerated pattern does not exist in the directory")
             return int(match.group(0))
-        for k in files.keys():
-            files[k] = parse_file_name(k)
+        for k, v in files.items():
+            v.num = parse_file_name(k)
