@@ -2,3 +2,5 @@
 **/.idea/
 *.zip
 **/__pycache__/
+**/renamer.egg-info/
+**/dist/

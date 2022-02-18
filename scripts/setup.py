@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 setup(
@@ -24,9 +24,10 @@ setup(
     version="1.0.0",
     author="Kevin Tyrrell",
     author_email="KevinTearUl@gmail.com",
+    packages=find_packages(),
     entry_points={
         "console_scripts": [
-            "renamer = renamer:main"
+            "renamer=renamer.renamer:main",
         ]
     }
 )
