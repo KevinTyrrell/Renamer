@@ -24,16 +24,7 @@ from directory import Directory
 from util.util import require_non_none
 
 
-# TODO: New format -- Dictionary values will now be objects allowing for more flexibility
-"""
-{
-    name: "af;klahr.jpeg"
-    num: 51
-    fnum: 051
-    ext: ".jpeg"
-    format: "%d"
-}
-"""
+
 
 
 class ExtensionDecorator(Directory):

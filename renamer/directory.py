@@ -25,6 +25,83 @@ from re import compile
 from util.util import require_non_none
 
 
+class FileMetadata:
+    # Pattern to extract extensions from filenames
+    __ext_pattern = compile(r"^.*\.([^.]+)$")
+
+    def __init__(self, filename: str):
+        """
+        Constructs metadata for a specified file.
+
+        The following metadata is tracked:
+        * name: Original filename with extension
+        * fmt: Output format of the file, which must contain '%d' (file number)
+        * num: File number (unknown during initialization)
+        * fnum: Formatted number, used to override 'num'
+        * ext: Extension of the file
+
+        :param filename: Name of the file
+        """
+        self.__name = require_non_none(filename)
+        self.__fmt = "%d"
+        self.__num = None
+        self.__fnum = None
+        match = FileMetadata.__ext_pattern.match(filename)
+        if match is None:
+            raise ValueError("The following file must contain an extension: " + filename)
+        self.__ext = match.group(1)
+    
+    @property
+    def name(self) -> str:
+        return self.__name
+
+    @property
+    def fmt(self) -> str:
+        return self.__fmt
+
+    @fmt.setter
+    def fmt(self, fmt: str) -> None:
+        if "%d" not in require_non_none(fmt):
+            raise ValueError("Require format specified '%d' was not found in the following format: " + fmt)
+        self.__fmt = fmt
+
+    @property
+    def num(self) -> int:
+        return self.__num
+
+    @num.setter
+    def num(self, num: int) -> None:
+        self.__num = require_non_none(num)
+
+    @property
+    def fnum(self) -> str:
+        if self.__num is None:
+            raise Exception("File's number cannot be formatted as it was uninitialized: " + self.__name)
+        if self.__fnum is None:
+            self.__fnum = str(self.__num)
+        return self.__fnum
+
+    @fnum.setter
+    def fnum(self, fnum: str) -> None:
+        self.__fnum = require_non_none(fnum)
+
+    @property
+    def ext(self) -> str:
+        return self.__ext
+
+    @ext.setter
+    def ext(self, ext: str) -> None:
+        self.__ext = require_non_none(str)
+
+    def __str__(self) -> str:
+        """
+        Formats the filename according to the object's metadata.
+
+        :return: Formatted filename of the object
+        """
+        return self.fmt.replace("%d", self.fnum) + "." + self.ext
+
+
 class Directory(ABC):
     @abstractmethod
     def get_files(self) -> Dict[str, object]:
