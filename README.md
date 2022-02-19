@@ -9,28 +9,70 @@
 
 This program attempts to emulate the simplicity of the [CLI program FFmpeg](https://github.com/FFmpeg/FFmpeg) but for renaming files. Basic operations are straight-forward, while complex operations only invovle adding more flags and parameters to your operation. A directory with files that contain some numerical pattern are all that's required to get started. The application is well-paired for other software that require strict naming schemes, such as Plex, Kodi, or image managers.
 
-![](header.png)
+![](res/HeaderImage.png)
 
 ## Installation
 
 OS X & Linux:
 
 ```sh
-npm install my-crazy-module --save
+bin/renamer.sh
 ```
 
 Windows:
 
 ```sh
-edit autoexec.bat
+"bin/renamer.bat"
 ```
 
-## Usage example
+## Usage
 
-A few motivating and useful examples of how your product can be used. Spice this up with code blocks and potentially more screenshots.
+| **Operation** | **Flag** | **Flag(Formal)** | **Parameter(s)**     | **Example**     | **Description**                                                                            |
+|---------------|----------|------------------|----------------------|-----------------|--------------------------------------------------------------------------------------------|
+| _Shift_       | -s       | --shift          | Number Shift(int)    | --shift -1      | Shifts all numerical values in filenames  by a specified (neg/pos) offset                  |
+| _Zeroes_      | -z       | --zeroes         | Leading Zeroes (int) | -z 3            | Number of maximum leading zeroes to format  numerical values (0 for automatic)             |
+| _Format_      | -f       | --fmt            | Output Format (str)  | -f "Episode $d" | Output format of the filename, containing '$d'  format specifier for the numerical pattern |
+| _Extension_   | -e       | --ext            | File Extension (str) | --ext png       | Replaces the extension of files in the  directory with a specified extension               |
+| _Consecutive_ | -c       | --consecutive    |                      |                 | Modifies numerical values in filenames  such that the values are consecutive               |
+| _Mute_        | -m       | --mute           |                      |                 | Squelches the console output of  filenames and their renamed filename                      |
+| _Confirm_     | -y       | --yes            |                      |                 | Confirms the operation and makes changes  to your file system according to the parameters  |
 
-_For more examples and usage, please refer to the [Wiki][wiki]._
+## Usage Examples
 
+**The following usage snippets use this directory as a template:**
+```
+mydir/
+  2021vacation0001.jpeg
+  2021vacation0003.jpeg
+  2021vacation0004.jpeg
+  2021vacation0010.jpeg
+```
+
+#### Clean-up
+> e.g. 1.jpeg, 3.jpeg, 4.jpeg, 10.jpeg
+```sh
+renamer mydir
+```
+
+#### Formalize & Fix Ordering
+> 01.jpeg, 02.jpeg, 03.jpeg, 04.jpeg
+```sh
+renamer mydir -z 1 -c
+```
+
+#### Format & Modify Extension
+> 2021 Vacation - 1.png, 2021 Vacation - 3.png, 2021 Vacation - 4.png, 2021 Vacation - 10.png
+```sh
+renamer mydir -e png -f "2021 Vacation - $d"
+```
+
+#### Shift & Flatten
+> 4.jpeg, 5.jpeg, 6.jpeg, 7.jpeg
+```sh
+renamer mydir -s 3 -c
+```
+
+<!--
 ## Development setup
 
 Describe how to install all development dependencies and how to run an automated test-suite of some kind. Potentially do this for multiple platforms.
@@ -39,42 +81,29 @@ Describe how to install all development dependencies and how to run an automated
 make install
 npm test
 ```
-
-## Release History
-
-* 0.2.1
-    * CHANGE: Update docs (module code remains unchanged)
-* 0.2.0
-    * CHANGE: Remove `setDefaultXYZ()`
-    * ADD: Add `init()`
-* 0.1.1
-    * FIX: Crash when calling `baz()` (Thanks @GenerousContributorName!)
-* 0.1.0
-    * The first proper release
-    * CHANGE: Rename `foo()` to `bar()`
-* 0.0.1
-    * Work in progress
+-->
 
 ## Meta
 
-Your Name – [@YourTwitter](https://twitter.com/dbader_org) – YourEmail@example.com
+Kevin Tyrrell – [KevinTearUl@gmail.com](mailto:KevinTearUl@gmail.com)
 
-Distributed under the XYZ license. See ``LICENSE`` for more information.
+Distributed under the GPL3 license. See ``LICENSE`` for more information.
 
-[https://github.com/yourname/github-link](https://github.com/dbader/)
+[https://github.com/KevinTyrrell](https://github.com/KevinTyrrell/)
 
 ## Contributing
 
-1. Fork it (<https://github.com/yourname/yourproject/fork>)
+1. Fork it (<https://github.com/KevinTyrrell/Renamer>)
 2. Create your feature branch (`git checkout -b feature/fooBar`)
 3. Commit your changes (`git commit -am 'Add some fooBar'`)
 4. Push to the branch (`git push origin feature/fooBar`)
 5. Create a new Pull Request
 
-<!-- Markdown link & img dfn's -->
+<!-- Markdown link & img dfn's
 [npm-image]: https://img.shields.io/npm/v/datadog-metrics.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/datadog-metrics
 [npm-downloads]: https://img.shields.io/npm/dm/datadog-metrics.svg?style=flat-square
 [travis-image]: https://img.shields.io/travis/dbader/node-datadog-metrics/master.svg?style=flat-square
 [travis-url]: https://travis-ci.org/dbader/node-datadog-metrics
 [wiki]: https://github.com/yourname/yourproject/wiki
+-->
