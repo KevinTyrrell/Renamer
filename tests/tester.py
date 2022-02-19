@@ -77,7 +77,7 @@ class MyTestCase(unittest.TestCase):
     def test_format_decorator2(self):
         d = ConcreteDirectory("C:\\Users\\admin\\Desktop\\Test\\test")
         d = NumeratedDecorator(d)
-        d = FormatDecorator(d, "My Test Episode (%d)")
+        d = FormatDecorator(d, "My Test Episode ($d)")
         d.operate()
         files = d.get_files()
         f = next(enumerate(files.values()))

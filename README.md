@@ -7,7 +7,7 @@
 [![Downloads Stats][npm-downloads]][npm-url]
 --->
 
-One to two paragraph statement about your product and what it does.
+This program attempts to emulate the simplicity of the [CLI program FFmpeg](https://github.com/FFmpeg/FFmpeg) but for renaming files. Basic operations are straight-forward, while complex operations only invovle adding more flags and parameters to your operation. A directory with files that contain some numerical pattern are all that's required to get started. The application is well-paired for other software that require strict naming schemes, such as Plex, Kodi, or image managers.
 
 ![](header.png)
 

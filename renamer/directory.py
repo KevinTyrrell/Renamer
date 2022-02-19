@@ -28,6 +28,7 @@ from util.util import require_non_none
 class FileMetadata:
     # Pattern to extract extensions from filenames
     __ext_pattern = compile(r"^.*\.([^.]+)$")
+    __fmt_specifier = "$d"
 
     def __init__(self, filename: str):
         """
@@ -43,7 +44,7 @@ class FileMetadata:
         :param filename: Name of the file
         """
         self.__name = require_non_none(filename)
-        self.__fmt = "%d"
+        self.__fmt = FileMetadata.__fmt_specifier
         self.__num = None
         self.__fnum = None
         match = FileMetadata.__ext_pattern.match(filename)
@@ -61,8 +62,9 @@ class FileMetadata:
 
     @fmt.setter
     def fmt(self, fmt: str) -> None:
-        if "%d" not in require_non_none(fmt):
-            raise ValueError("Require format specified '%d' was not found in the following format: " + fmt)
+        if FileMetadata.__fmt_specifier not in require_non_none(fmt):
+            raise ValueError("Required format specified '{}' was not found in the following format: {}"
+                             .format(FileMetadata.__fmt_specifier, fmt))
         self.__fmt = fmt
 
     @property
@@ -99,7 +101,7 @@ class FileMetadata:
 
         :return: Formatted filename of the object
         """
-        return self.fmt.replace("%d", self.fnum) + "." + self.ext
+        return self.fmt.replace("$d", self.fnum) + "." + self.ext
 
 
 class Directory(ABC):
