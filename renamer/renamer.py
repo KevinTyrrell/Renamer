@@ -53,7 +53,7 @@ def main():
         dec = de.FormatDecorator(dec, args.fmt)
     if args.consecutive:
         dec = de.FlattenDecorator(dec)
-    if args.zeroes:
+    if args.zeroes is not None:
         dec = de.ZeroesDecorator(dec, args.zeroes)
     if args.ext:
         dec = de.ExtensionDecorator(dec, args.ext)
