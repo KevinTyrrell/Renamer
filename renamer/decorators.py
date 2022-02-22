@@ -197,11 +197,16 @@ class NumeratedDecorator(Directory):
             raise Exception("A numerated pattern is not present in the directory")
         target_ixs = next(enumerate(target_ixs.keys()))[1]
         regexp = compile(regexp)
+        unique_keys = set()  # Ensure that keys are 1:1
 
         def parse_file_name(filename: str) -> int:
             match = regexp.match(filename, target_ixs)
             if not match:
                 raise Exception("File does not contain a numerical index: " + filename)
-            return int(match.group(0))
+            match = int(match.group(0))
+            if match in unique_keys:
+                raise Exception("File numerical values are not one-to-one: " + filename)
+            unique_keys.add(match)
+            return match
         for k, v in files.items():
             v.num = parse_file_name(k)
