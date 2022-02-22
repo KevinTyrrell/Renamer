@@ -30,7 +30,7 @@ def main():
     # Optional arguments
     args.add_argument("-s", "--shift", dest="shift", type=int,
                       help="Shifts all numerical values in filenames by a specified (neg/pos) offset")
-    args.add_argument("-z", "--zeroes", dest="zeroes", type=int,
+    args.add_argument("-z", "--zeroes", dest="zeroes", type=int, const=0, nargs="?",
                       help="Number of maximum leading zeroes to format numerical values (0 for automatic)")
     args.add_argument("-f", "--fmt", dest="fmt", type=str,
                       help="Output format of the filename, containing '$d' format specifier for the numerical pattern")
