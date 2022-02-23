@@ -29,15 +29,17 @@ def main():
     args.add_argument("path", type=str, help="Absolute or relative path to the directory")
     # Optional arguments
     args.add_argument("-s", "--shift", dest="shift", type=int,
-                      help="Shifts all numerical values in filenames by a specified (neg/pos) offset")
+                      help="Shifts all numerical values by the specified offset")
     args.add_argument("-z", "--zeroes", dest="zeroes", type=int, const=0, nargs="?",
-                      help="Number of maximum leading zeroes to format numerical values (0 for automatic)")
+                      help="Formats numerical values with the specified number of leading zeroes, or inferred")
+    args.add_argument("-n", "--random", dest="random", type=int, const=None, nargs="?", default=False,
+                      help="Shuffles numerical values using the specified seed, or randomly")
     args.add_argument("-f", "--fmt", dest="fmt", type=str,
-                      help="Output format of the filename, containing '$d' format specifier for the numerical pattern")
+                      help="Output format containing '$d' format specifier for the numerical pattern")
     args.add_argument("-e", "--ext", dest="ext", type=str,
-                      help="Replaces the extension of files in the directory with a specified extension")
+                      help="Changes the extension of all files to the specified extension")
     args.add_argument("-c", "--consecutive", dest="consecutive", action="store_true",
-                      help="Modifies numerical values in filenames such that the values are consecutive")
+                      help="Flattens numerical values in such that they are all consecutive")
     args.add_argument("-m", "--mute", dest="mute", action="store_false",
                       help="Squelches the console output of filenames and their renamed filename")
     args.add_argument("-y", "--yes", dest="confirm", action="store_true",
@@ -53,6 +55,8 @@ def main():
         dec = de.FormatDecorator(dec, args.fmt)
     if args.consecutive:
         dec = de.FlattenDecorator(dec)
+    if args.random is not False:
+        dec = de.RandomizeDecorator(dec, args.random)
     if args.zeroes is not None:
         dec = de.ZeroesDecorator(dec, args.zeroes)
     if args.ext:

@@ -27,15 +27,16 @@ Windows:
 
 ## Usage
 
-| **Operation** | **Flag** | **Flag(Formal)** | **Parameter(s)**     | **Example**     | **Description**                                                                            |
-|---------------|----------|------------------|----------------------|-----------------|--------------------------------------------------------------------------------------------|
-| _Shift_       | -s       | --shift          | Number Shift(int)    | --shift -1      | Shifts all numerical values in filenames  by a specified (neg/pos) offset                  |
-| _Zeroes_      | -z       | --zeroes         | Leading Zeroes (int) | -z 3            | Number of maximum leading zeroes to format  numerical values (0 for automatic)             |
-| _Format_      | -f       | --fmt            | Output Format (str)  | -f "Episode $d" | Output format of the filename, containing '$d'  format specifier for the numerical pattern |
-| _Extension_   | -e       | --ext            | File Extension (str) | --ext png       | Replaces the extension of files in the  directory with a specified extension               |
-| _Consecutive_ | -c       | --consecutive    |                      |                 | Modifies numerical values in filenames  such that the values are consecutive               |
-| _Mute_        | -m       | --mute           |                      |                 | Squelches the console output of  filenames and their renamed filename                      |
-| _Confirm_     | -y       | --yes            |                      |                 | Confirms the operation and makes changes  to your file system according to the parameters  |
+| **Operation** | **Flag** | **Flag(Formal)** | **Parameter(s)**     | **Example**     | **Description**                                                                          |
+|---------------|----------|------------------|----------------------|-----------------|------------------------------------------------------------------------------------------|
+| _Shift_       | -s       | --shift          | Number Shift <int>   | --shift -1      | Shifts all numerical values by the specified offset                                      |
+| _Zeroes_      | -z       | --zeroes         | Leading Zeroes [int] | -z 3            | Formats numerical values with the specified number of leading zeroes, or inferred        |
+| _Format_      | -f       | --fmt            | Output Format <str>  | -f "Episode $d" | Output format containing '$d' format specifier for the numerical pattern                 |
+| _Extension_   | -e       | --ext            | File Extension <str> | --ext png       | Changes the extension of all files to the specified extension                            |
+| _Random_      | -n       | --random         | Random Seed [int]    | -n 839693       | Shuffles numerical values using the specified seed, or randomly                          |
+| _Consecutive_ | -c       | --consecutive    |                      |                 | Flattens numerical values in such that they are all consecutive                          |
+| _Mute_        | -m       | --mute           |                      |                 | Squelches the console output of filenames and their renamed filename                     |
+| _Confirm_     | -y       | --yes            |                      |                 | Confirms the operation and makes changes to your file system according to the parameters |
 
 ## Usage Examples
 
