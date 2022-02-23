@@ -20,7 +20,7 @@ import unittest
 import re
 
 from directory import ConcreteDirectory
-from decorators import ShifterDecorator, NumeratedDecorator, FlattenDecorator, ZeroesDecorator, FormatDecorator, ExtensionDecorator
+from decorators import ShifterDecorator, NumeratedDecorator, FlattenDecorator, ZeroesDecorator, FormatDecorator, ExtensionDecorator, RandomizeDecorator
 
 
 class MyTestCase(unittest.TestCase):
@@ -97,7 +97,14 @@ class MyTestCase(unittest.TestCase):
         d = NumeratedDecorator(a)
         d = ShifterDecorator(d, 1)
         d.operate()
-        a.save_files()
+
+    def test_random_decorator1(self):
+        a = ConcreteDirectory("C:\\Users\\admin\\Desktop\\Test\\test")
+        d = NumeratedDecorator(a)
+        d = RandomizeDecorator(d)
+        d.operate()
+        for k, v in d.get_files().items():
+            print(k, v.num)
 
 
 if __name__ == '__main__':

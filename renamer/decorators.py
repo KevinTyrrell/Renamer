@@ -19,9 +19,38 @@
 from typing import Dict
 from re import finditer, compile
 from math import log, ceil
+from random import Random
 
 from directory import Directory, FileMetadata
 from util.util import require_non_none
+
+
+class RandomizeDecorator(Directory):
+    def __init__(self, decorated: Directory, seed: int = None):
+        """
+        Decorator which randomly shuffles all numerical values in the directory
+
+        :param decorated: Decorated Directory
+        :param seed: Seed to be used ('None' for system's clock)
+        """
+        self.__decorated = require_non_none(decorated)
+        self.__seed = seed
+
+    def get_files(self) -> Dict[str, FileMetadata]:
+        return self.__decorated.get_files()
+
+    def operate(self) -> None:
+        self.__decorated.operate()
+        flist = list(self.get_files().values())
+        gen = Random(self.__seed)
+        for i in range(len(flist) - 1):
+            j = gen.randrange(i, len(flist))
+            if i != j:
+                i: FileMetadata = flist[i]
+                j: FileMetadata = flist[j]
+                temp = i.num
+                i.num = j.num
+                j.num = temp
 
 
 class ExtensionDecorator(Directory):
