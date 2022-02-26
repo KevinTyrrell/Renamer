@@ -21,6 +21,7 @@ import re
 
 from directory import ConcreteDirectory
 from decorators import ShifterDecorator, NumeratedDecorator, FlattenDecorator, ZeroesDecorator, FormatDecorator, ExtensionDecorator, RandomizeDecorator
+from util import directedgraph
 
 
 class MyTestCase(unittest.TestCase):
@@ -103,8 +104,20 @@ class MyTestCase(unittest.TestCase):
         d = NumeratedDecorator(a)
         d = RandomizeDecorator(d)
         d.operate()
-        for k, v in d.get_files().items():
-            print(k, v.num)
+        #for k, v in d.get_files().items():
+        #    print(k, v.num)
+
+    def test_directed_graph1(self):
+        d = {
+            "C": ("D", "E"),
+            "D": ("E",),
+            "B": ("C",),
+            "A": ("D", "B"),
+            "F": ()
+        }
+
+        g = directedgraph.DirectedAcyclicGraph(d)
+        self.assertEqual(g.topological_sort(), ["F", "A", "B", "C", "D"])
 
 
 if __name__ == '__main__':

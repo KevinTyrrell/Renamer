@@ -153,6 +153,10 @@ class ConcreteDirectory(Directory):
                 performable.append(k)
             else:
                 conflicts[v] = k
+
+        # Cyclical DAG -- Need to break it apart.
+        # Problem: It might be possible there are multiple cyclic DAG's.
+
         while len(performable) > 0:
             op = performable.pop()
             p1 = join(self.__path, op)
@@ -161,6 +165,12 @@ class ConcreteDirectory(Directory):
             if op in conflicts:
                 performable.append(conflicts[op])
                 del conflicts[op]
+
+    def dag_topological_sort(self, vertices):
+        pass
+
+    def dag_break_cycle(self):
+        pass
 
     def get_files(self) -> Dict[str, FileMetadata]:
         return self.__files
