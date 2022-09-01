@@ -31,7 +31,7 @@ def main():
     args.add_argument("-s", "--shift", dest="shift", type=int,
                       help="Shifts all numerical values by the specified offset")
     args.add_argument("-z", "--zeroes", dest="zeroes", type=int, const=0, nargs="?",
-                      help="Formats numerical values with the specified number of leading zeroes, or inferred")
+                      help="Prepends numerical values with the specified or inferred number of leading zeroes")
     args.add_argument("-n", "--random", dest="random", type=int, const=None, nargs="?", default=False,
                       help="Shuffles numerical values using the specified seed, or randomly")
     args.add_argument("-f", "--fmt", dest="fmt", type=str,
@@ -39,7 +39,7 @@ def main():
     args.add_argument("-e", "--ext", dest="ext", type=str,
                       help="Changes the extension of all files to the specified extension")
     args.add_argument("-c", "--consecutive", dest="consecutive", action="store_true",
-                      help="Flattens numerical values in such that they are all consecutive")
+                      help="Flattens numerical values such that they are all consecutive")
     args.add_argument("-m", "--mute", dest="mute", action="store_false",
                       help="Squelches the console output of filenames and their renamed filename")
     args.add_argument("-y", "--yes", dest="confirm", action="store_true",
