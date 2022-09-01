@@ -16,8 +16,8 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-from typing import Dict
-from re import finditer, compile
+from typing import Dict, List
+from re import findall
 from math import log, ceil
 from random import Random
 
@@ -204,32 +204,22 @@ class NumeratedDecorator(Directory):
         self.__decorated.operate()
         files = self.get_files()
 
-        it = enumerate(files.keys())
-        model = next(it)[1]  # Select one file to use as the 'model' for the directory
-        regexp = "([0-9]+)"
+        regexp = "([0-9]+)"  # Captures all 'runs' of integers in the filename
+        runs_by_file = {f: [int(e) for e in findall(regexp, f)] for f in files}
+        # Count of numerical 'runs' in which the filenames all share
+        num_runs = min(map(lambda x: len(x), runs_by_file.values()))
+        unique_runs = list(filter(
+            lambda x: NumeratedDecorator.__is_unique_run_set(runs_by_file, x), list(range(0, num_runs))))
 
-        # Map of indexes which start runs of integers --> the value of those integers
-        model_ixs = {m.start(): int(model[m.start():m.end()]) for m in finditer(regexp, model)}
-        print("model", model)
-        print("model", model_ixs)
-        target_ixs = {}
-        
-        # TODO: Using a for loop below for a single element is nonsense. Use 'next' instead.
-        # TODO: It might make more sense to check every single element, because of scenarios like: a20b10.mkv 
-
-        for e in it:  # Find numerical differences between the model and this file
-            print(e)
-            ixs = {m.start(): int(e[1][m.start():m.end()]) for m in finditer(regexp, e[1])}
-            for k, v in ixs.items():
-                # Determine what integers the two file names do not have in common
-                if k in model_ixs and model_ixs[k] != v:
-                    target_ixs[k] = v
-            break  # No need to check the entire file list
-
-        if len(target_ixs) > 1:
-            raise Exception("A numerated pattern could not be differentiated: ", target_ixs)
-        if len(target_ixs) <= 0:
+        if len(unique_runs) > 1:
+            for t in runs_by_file.items():
+                print("{}\n\tAmbiguous numbering: {}".format(t[0], ", ".join(map(lambda x: str(t[1][x]), unique_runs))))
+            raise Exception("A numerated pattern could not be differentiated")
+        if len(unique_runs) <= 0:
             raise Exception("A numerated pattern is not present in the directory")
+        print(unique_runs)
+
+        """
         target_ixs = next(enumerate(target_ixs.keys()))[1]
         regexp = compile(regexp)
 
@@ -244,3 +234,13 @@ class NumeratedDecorator(Directory):
             if v.num in unique_keys:
                 raise Exception("File numerical values are not one-to-one: " + k)
             unique_keys.add(v.num)
+        """
+
+    @staticmethod  # Returns true if all runs at an index are unique
+    def __is_unique_run_set(runs: Dict[str, List[int]], index: int):
+        s = set()
+        for nums in runs.values():
+            e = nums[index]
+            if e in s: return False
+            s.add(e)
+        return True
