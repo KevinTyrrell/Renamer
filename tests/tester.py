@@ -115,9 +115,22 @@ class MyTestCase(unittest.TestCase):
             "A": ("D", "B"),
             "F": ()
         }
-
-        g = directedgraph.DirectedAcyclicGraph(d)
+        g = directedgraph.DAG(d)
         self.assertEqual(g.topological_sort(), ["F", "A", "B", "C", "D"])
+
+    def test_directed_graph2(self):
+        # test cycles
+        d = {
+            "A": ("B",),
+            "B": ("C",),
+            "C": ("A",)
+        }
+        g = directedgraph.DAG(d)
+
+        def cycle_break(a, b):
+            print("broke", a, b)
+
+        print(g.topological_sort(cycle_break))
 
 
 if __name__ == '__main__':

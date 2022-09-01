@@ -210,9 +210,15 @@ class NumeratedDecorator(Directory):
 
         # Map of indexes which start runs of integers --> the value of those integers
         model_ixs = {m.start(): int(model[m.start():m.end()]) for m in finditer(regexp, model)}
+        print("model", model)
+        print("model", model_ixs)
         target_ixs = {}
+        
+        # TODO: Using a for loop below for a single element is nonsense. Use 'next' instead.
+        # TODO: It might make more sense to check every single element, because of scenarios like: a20b10.mkv 
 
         for e in it:  # Find numerical differences between the model and this file
+            print(e)
             ixs = {m.start(): int(e[1][m.start():m.end()]) for m in finditer(regexp, e[1])}
             for k, v in ixs.items():
                 # Determine what integers the two file names do not have in common
