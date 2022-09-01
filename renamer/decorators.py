@@ -217,30 +217,16 @@ class NumeratedDecorator(Directory):
             raise Exception("A numerated pattern could not be differentiated")
         if len(unique_runs) <= 0:
             raise Exception("A numerated pattern is not present in the directory")
-        print(unique_runs)
-
-        """
-        target_ixs = next(enumerate(target_ixs.keys()))[1]
-        regexp = compile(regexp)
-
-        def parse_file_name(filename: str) -> int:
-            match = regexp.match(filename, target_ixs)
-            if not match:
-                raise Exception("File does not contain a numerical index: " + filename)
-            return int(match.group(0))
-        unique_keys = set()  # Ensure that keys are 1:1
+        unique_runs = unique_runs[0]
         for k, v in files.items():
-            v.num = parse_file_name(k)
-            if v.num in unique_keys:
-                raise Exception("File numerical values are not one-to-one: " + k)
-            unique_keys.add(v.num)
-        """
+            v.num = runs_by_file[k][unique_runs]  # Pattern can now be determined
 
     @staticmethod  # Returns true if all runs at an index are unique
     def __is_unique_run_set(runs: Dict[str, List[int]], index: int):
         s = set()
         for nums in runs.values():
             e = nums[index]
-            if e in s: return False
+            if e in s:
+                return False
             s.add(e)
         return True
