@@ -35,7 +35,7 @@ def main():
     args.add_argument("-n", "--random", dest="random", type=int, const=None, nargs="?", default=False,
                       help="Shuffles numerical values using the specified seed, or randomly")
     args.add_argument("-f", "--fmt", dest="fmt", type=str, nargs="+",
-                      help="Output format containing '$d' format specifier for the numerical pattern")
+                      help="Customizes filename output (see wiki for usage)")
     args.add_argument("-e", "--ext", dest="ext", type=str,
                       help="Changes the extension of all files to the specified extension")
     args.add_argument("-c", "--consecutive", dest="consecutive", action="store_true",

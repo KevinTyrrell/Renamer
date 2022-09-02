@@ -31,7 +31,7 @@ Windows:
 |---------------|----------|------------------|----------------------|-----------------|------------------------------------------------------------------------------------------|
 | _Shift_       | -s       | --shift          | Number Shift (int)   | --shift -1      | Shifts all numerical values by the specified offset                                      |
 | _Zeroes_      | -z       | --zeroes         | Leading Zeroes [int] | -z 3            | Prepends numerical values with the specified or inferred number of leading zeroes        |
-| _Format_      | -f       | --fmt            | Output Format (str)  | -f "Episode $d" | Output format containing '$d' format specifier for the numerical pattern                 |
+| _Format_      | -f       | --fmt            | Output Format (str)  | -f "Episode $d" | Customizes filename output ([see wiki](https://github.com/KevinTyrrell/Renamer/wiki/Format-Operator) for usage)|
 | _Extension_   | -e       | --ext            | File Extension (str) | --ext png       | Changes the extension of all files to the specified extension                            |
 | _Random_      | -n       | --random         | Random Seed [int]    | -n 839693       | Shuffles numerical values using the specified seed, or randomly                          |
 | _Consecutive_ | -c       | --consecutive    |                      |                 | Flattens numerical values such that they are all consecutive                             |
