@@ -34,7 +34,7 @@ def main():
                       help="Prepends numerical values with the specified or inferred number of leading zeroes")
     args.add_argument("-n", "--random", dest="random", type=int, const=None, nargs="?", default=False,
                       help="Shuffles numerical values using the specified seed, or randomly")
-    args.add_argument("-f", "--fmt", dest="fmt", type=str,
+    args.add_argument("-f", "--fmt", dest="fmt", type=str, nargs="+",
                       help="Output format containing '$d' format specifier for the numerical pattern")
     args.add_argument("-e", "--ext", dest="ext", type=str,
                       help="Changes the extension of all files to the specified extension")
