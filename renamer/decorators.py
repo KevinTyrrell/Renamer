@@ -156,7 +156,7 @@ class ZeroesDecorator(Directory):
         :param num: Number to count digits of
         :return: Number of digits present
         """
-        return int(ceil(log(num + 1, 10)))
+        return int(ceil(log(abs(num) + 1, 10)))
 
 
 class ShifterDecorator(Directory):

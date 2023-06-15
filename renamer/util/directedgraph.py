@@ -18,6 +18,7 @@
 
 from __future__ import annotations
 from typing import TypeVar
+from collections import deque
 
 from util.util import require_non_none
 
@@ -59,6 +60,29 @@ class DAG:
         v.edges.add(e)
         e.degree += 1
         return True
+
+    def dfs_find_cycles(self) -> None:
+
+        # White: Vertices which are currently unvisited
+        # Gray: Vertices which are in the process of being visited
+        # Black: Vertices which have been completely visited
+        white, grey, black = self.__nodes.copy(), set(), set()
+
+        parents = {}  # Map of vertices -> edge for traversal history
+        stack = deque()
+
+        # TODO: This makes way more sense to use recursion
+
+        while len(white > 1):  # Cycle of one or no element(s) is impossible
+            w = next(iter(white))
+            stack.append(w)
+            parents[w] = None
+            while len(stack) > 0:
+                v = stack.pop()
+                grey.add(v)
+                for e in v.edges:
+                    stack.append(e)
+                    parents[e] = v  # Edge was introduced by vertex
 
     class __DAGNode:
         def __init__(self, data: T):

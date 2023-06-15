@@ -5,3 +5,5 @@
 **/renamer.egg-info/
 **/dist/
 **/out/
+MANIFEST.in
+**/todo/
