@@ -8,6 +8,7 @@ import io
 import os
 import sys
 from shutil import rmtree
+from distutils.command.clean import clean
 
 from setuptools import find_packages, setup, Command
 
@@ -94,6 +95,54 @@ class UploadCommand(Command):
         sys.exit()
 
 
+class CustomCleanCommand(clean):
+    user_options = clean.user_options + [
+        ('dry-run', None, 'Perform a dry run without deleting files'),
+    ]
+
+    def initialize_options(self):
+        super().initialize_options()
+        self.dry_run = False
+
+    @staticmethod
+    def zap_print(path: str) -> None:
+        print(f"~Cleaning: {path}")
+
+    @staticmethod
+    def zap(path: str) -> None:
+        CustomCleanCommand.zap_print(path)
+        if os.path.isdir(path):
+            rmtree(path)
+        else:
+            os.remove(path)
+
+    def run(self):
+        # Call the parent's run() method
+        super().run()
+
+        clean_search = [  # Files to search for using walk / substring matches
+            ('src', '__pycache'),
+            ('.', 'egg-info')
+        ]
+        clean_target = [  # Delete specific directories
+            'dist',
+            'build',
+            'out',
+        ]
+
+        # Only delete files if a non-dry run was desired
+        zapper = CustomCleanCommand.zap_print if self.dry_run else CustomCleanCommand.zap
+
+        for path, sub_str in clean_search:
+            for root, dirs, files in os.walk(path):
+                for name in files + dirs:
+                    if sub_str in name:
+                        zapper(os.path.join(root, name))
+        for directory in clean_target:
+            if os.path.exists(directory):
+                zapper(directory)
+
+
 PACKAGES = find_packages(where='src', exclude=["tests", "*.tests", "*.tests.*", "tests.*"])
 if len("") > 0:  # Only set '>=' for debugging purposes.
     print("Discovered packages:")  # Print the list of discovered packages
@@ -142,5 +191,6 @@ setup(
     # $ setup.py publish support.
     cmdclass={
         'upload': UploadCommand,
+        'clean': CustomCleanCommand,
     },
 )
