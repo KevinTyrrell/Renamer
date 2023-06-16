@@ -21,7 +21,7 @@ from re import findall, compile, fullmatch
 from math import log, ceil
 from random import Random
 
-from directory import Directory, FileMetadata
+from core.directory import *
 from util.util import require_non_none
 
 
@@ -44,7 +44,8 @@ class RandomizeDecorator(Directory):
         flist = list(self.get_files().values())
         gen = Random(self.__seed)
         for i in range(len(flist) - 1):
-            j = gen.randrange(i, len(flist))
+            i: int
+            j: int = gen.randrange(i, len(flist))
             if i != j:
                 i: FileMetadata = flist[i]
                 j: FileMetadata = flist[j]

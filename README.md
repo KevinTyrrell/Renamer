@@ -13,17 +13,15 @@ This program attempts to emulate the simplicity of the [CLI program FFmpeg](http
 
 ## Installation
 
-OS X & Linux:
+Install `renamer-kt` using `pip`:
+
+####bash
 
 ```sh
-bin/renamer.sh
+pip install renamer-kt
 ```
 
-Windows:
-
-```sh
-"bin/renamer.bat"
-```
+*Make sure you have Python and `pip` installed.*
 
 ## Usage
 
@@ -52,25 +50,25 @@ mydir/
 #### Clean-up
 > e.g. 1.jpeg, 3.jpeg, 4.jpeg, 10.jpeg
 ```sh
-renamer mydir
+core mydir
 ```
 
 #### Formalize & Fix Ordering
 > 01.jpeg, 02.jpeg, 03.jpeg, 04.jpeg
 ```sh
-renamer mydir -z 1 -c
+core mydir -z 1 -c
 ```
 
 #### Format & Modify Extension
 > 2021 Vacation - 1.png, 2021 Vacation - 3.png, 2021 Vacation - 4.png, 2021 Vacation - 10.png
 ```sh
-renamer mydir -e png -f "2021 Vacation - $d"
+core mydir -e png -f "2021 Vacation - $d"
 ```
 
 #### Shift & Flatten
 > 4.jpeg, 5.jpeg, 6.jpeg, 7.jpeg
 ```sh
-renamer mydir -s 3 -c
+core mydir -s 3 -c
 ```
 
 <!--

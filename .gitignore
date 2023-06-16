@@ -3,7 +3,9 @@
 *.zip
 **/__pycache__/
 **/renamer.egg-info/
+**.egg-info/
 **/dist/
 **/out/
 MANIFEST.in
 **/todo/
+**/build

@@ -18,8 +18,8 @@
 
 from argparse import ArgumentParser
 
-import decorators as de
-from directory import ConcreteDirectory
+from core.directory import ConcreteDirectory
+from core.decorators import *
 
 
 def main():
@@ -48,19 +48,19 @@ def main():
 
     # Process arguments
     directory = ConcreteDirectory(args.path)
-    dec = de.NumeratedDecorator(directory)
+    dec = NumeratedDecorator(directory)
     if args.shift:
-        dec = de.ShifterDecorator(dec, args.shift)
+        dec = ShifterDecorator(dec, args.shift)
     if args.fmt:
-        dec = de.FormatDecorator(dec, args.fmt)
+        dec = FormatDecorator(dec, args.fmt)
     if args.consecutive:
-        dec = de.FlattenDecorator(dec)
+        dec = FlattenDecorator(dec)
     if args.random is not False:
-        dec = de.RandomizeDecorator(dec, args.random)
+        dec = RandomizeDecorator(dec, args.random)
     if args.zeroes is not None:
-        dec = de.ZeroesDecorator(dec, args.zeroes)
+        dec = ZeroesDecorator(dec, args.zeroes)
     if args.ext:
-        dec = de.ExtensionDecorator(dec, args.ext)
+        dec = ExtensionDecorator(dec, args.ext)
     dec.operate()  # Perform operations according to decorators
 
     if args.mute:
