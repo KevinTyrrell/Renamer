@@ -13,9 +13,12 @@ This program attempts to emulate the simplicity of the [CLI program FFmpeg](http
 
 ## Installation
 
+[![PyPI](https://img.shields.io/pypi/v/renamer_kt.svg)](https://pypi.org/project/renamer_kt/)
+
+
 Install `renamer-kt` using `pip`:
 
-####bash
+### bash
 
 ```sh
 pip install renamer-kt
@@ -50,37 +53,27 @@ mydir/
 #### Clean-up
 > e.g. 1.jpeg, 3.jpeg, 4.jpeg, 10.jpeg
 ```sh
-core mydir
+renamer mydir
 ```
 
 #### Formalize & Fix Ordering
 > 01.jpeg, 02.jpeg, 03.jpeg, 04.jpeg
 ```sh
-core mydir -z 1 -c
+renamer mydir -z 1 -c
 ```
 
 #### Format & Modify Extension
 > 2021 Vacation - 1.png, 2021 Vacation - 3.png, 2021 Vacation - 4.png, 2021 Vacation - 10.png
 ```sh
-core mydir -e png -f "2021 Vacation - $d"
+renamer mydir -e png -f "2021 Vacation - $d"
 ```
 
 #### Shift & Flatten
 > 4.jpeg, 5.jpeg, 6.jpeg, 7.jpeg
 ```sh
-core mydir -s 3 -c
+renamer mydir -s 3 -c
 ```
 
-<!--
-## Development setup
-
-Describe how to install all development dependencies and how to run an automated test-suite of some kind. Potentially do this for multiple platforms.
-
-```sh
-make install
-npm test
-```
--->
 
 ## Meta
 
