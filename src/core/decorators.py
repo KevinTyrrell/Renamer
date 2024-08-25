@@ -78,7 +78,7 @@ class ExtensionDecorator(Directory):
 class FormatDecorator(Directory):
     __format_specifier = "${}"  # Substitution constant for optional input regex
 
-    def __init__(self, decorated: Directory, fmt: str):
+    def __init__(self, decorated: Directory, fmt: list[str]):
         """
         Decorator which modifies the output filename into a specified format
 
@@ -102,29 +102,28 @@ class FormatDecorator(Directory):
         Index 1: Output Format
         * Must contain '$d' format specifier for numerical pattern
         * May contain '$1', '$2', etc format specifiers for regex substitution
+        
         Index 2: [Optional] Input Capture
         * Regex string which should include capture groups
         * Any captured group will be substituted into the output format
         * Captured groups correspond to their format specifiers, in order of capture
         * e.g. (Apple) Pear (Banana), '$1' corresponds to 'Apple', '$2' -> 'Banana'
         """
-        output = fmt[0]
         if len(fmt) > 1:  # User wants to capture input
             pattern = compile(fmt[1])
             for k, v in files.items():
-                fmt = output
-                m = fullmatch(pattern, k)
-                if m is None:
-                    raise Exception("Optional format regex does not match file: {}".format(k))
-                groups = m.groups()
-                num_groups = len(groups)
-                for i in range(num_groups):
+                fmt = fmt[0]
+                matcher = fullmatch(pattern, k)
+                if matcher is None:
+                    raise Exception("--format optional capture regex does not match file: {}".format(k))
+                groups = matcher.groups()
+                for i in range(len(groups)):
                     target = FormatDecorator.__format_specifier.format(i + 1)
                     fmt = fmt.replace(target, groups[i])
                 v.fmt = fmt
         else:  # No regex capture provided, no need for substitution
             for k, v in files.items():
-                v.fmt = output
+                v.fmt = fmt[0]
 
 
 class ZeroesDecorator(Directory):

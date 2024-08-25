@@ -19,25 +19,27 @@
 import unittest
 import re
 
-from directory import ConcreteDirectory
-from decorators import ShifterDecorator, NumeratedDecorator, FlattenDecorator, ZeroesDecorator, FormatDecorator, ExtensionDecorator, RandomizeDecorator
-from util import directedgraph
+from core.directory import ConcreteDirectory
+from core.decorators import (ShifterDecorator, NumeratedDecorator, FlattenDecorator, ZeroesDecorator,
+                             FormatDecorator, ExtensionDecorator, RandomizeDecorator)
 
 
 class MyTestCase(unittest.TestCase):
+    __TESTING_PATH = "Testing Directory/"
+
     def test_directory(self):
-        d = ConcreteDirectory("C:\\Users\\admin\\Desktop\\Test\\test")
+        d = ConcreteDirectory(MyTestCase.__TESTING_PATH)
         self.assertEqual(True, True)
 
     def test_shift_decorator1(self):
-        d = ConcreteDirectory("C:\\Users\\admin\\Desktop\\Test\\test")
+        d = ConcreteDirectory(MyTestCase.__TESTING_PATH)
         d.operate()
         d = ShifterDecorator(d, 5)
         with self.assertRaises(Exception):
             d.operate()
 
     def test_shift_decorator2(self):
-        d = ConcreteDirectory("C:\\Users\\admin\\Desktop\\Test\\test")
+        d = ConcreteDirectory(MyTestCase.__TESTING_PATH)
         d = NumeratedDecorator(d)
         d = ShifterDecorator(d, 5)
         d.operate()
@@ -46,12 +48,12 @@ class MyTestCase(unittest.TestCase):
             self.assertEqual(type(v).__class__, int.__class__)
 
     def test_nume_decorator1(self):
-        d = ConcreteDirectory("C:\\Users\\admin\\Desktop\\Test\\test")
+        d = ConcreteDirectory(MyTestCase.__TESTING_PATH)
         d = NumeratedDecorator(d)
         d.operate()
 
     def test_flatten_decorator1(self):
-        d = ConcreteDirectory("C:\\Users\\admin\\Desktop\\Test\\test")
+        d = ConcreteDirectory(MyTestCase.__TESTING_PATH)
         d = NumeratedDecorator(d)
         d = FlattenDecorator(d)
         d.operate()
@@ -61,7 +63,7 @@ class MyTestCase(unittest.TestCase):
             self.assertEqual(sort[i].num - sort[0].num, i)
 
     def test_zeroes_decorator1(self):
-        d = ConcreteDirectory("C:\\Users\\admin\\Desktop\\Test\\test")
+        d = ConcreteDirectory(MyTestCase.__TESTING_PATH)
         d = NumeratedDecorator(d)
         d = ZeroesDecorator(d, 3)
         d.operate()
@@ -70,15 +72,25 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(len(sort[0].fnum), 3)
 
     def test_format_decorator1(self):
-        d = ConcreteDirectory("C:\\Users\\admin\\Desktop\\Test\\test")
+        d = ConcreteDirectory(MyTestCase.__TESTING_PATH)
         d = NumeratedDecorator(d)
-        d = FormatDecorator(d, "%s")
+        d = FormatDecorator(d, ["%s"])
         self.assertRaises(ValueError, lambda: d.operate())
 
     def test_format_decorator2(self):
-        d = ConcreteDirectory("C:\\Users\\admin\\Desktop\\Test\\test")
+        d = ConcreteDirectory(MyTestCase.__TESTING_PATH)
         d = NumeratedDecorator(d)
-        d = FormatDecorator(d, "My Test Episode ($d)")
+        d = FormatDecorator(d, ["My Test Episode ($d)"])
+        d.operate()
+        files = d.get_files()
+        f = next(enumerate(files.values()))
+        f: str = str(f[1])
+        self.assertTrue(re.match(r"My Test Episode \([0-9]+\)", f))
+
+    def test_format_decorator3(self):
+        d = ConcreteDirectory(MyTestCase.__TESTING_PATH)
+        d = NumeratedDecorator(d)
+        d = FormatDecorator(d, ["My Test Episode ($d)", "6"])  # Need better control here
         d.operate()
         files = d.get_files()
         f = next(enumerate(files.values()))
@@ -86,7 +98,7 @@ class MyTestCase(unittest.TestCase):
         self.assertTrue(re.match(r"My Test Episode \([0-9]+\)", f))
 
     def test_ext_decorator1(self):
-        d = ConcreteDirectory("C:\\Users\\admin\\Desktop\\Test\\test")
+        d = ConcreteDirectory(MyTestCase.__TESTING_PATH)
         d = NumeratedDecorator(d)
         d = ExtensionDecorator(d, "jpeg")
         d.operate()
@@ -94,43 +106,16 @@ class MyTestCase(unittest.TestCase):
             self.assertTrue(str(e).endswith(".jpeg"))
 
     def test_directory_save1(self):
-        a = ConcreteDirectory("C:\\Users\\admin\\Desktop\\Test\\test")
+        a = ConcreteDirectory(MyTestCase.__TESTING_PATH)
         d = NumeratedDecorator(a)
         d = ShifterDecorator(d, 1)
         d.operate()
 
     def test_random_decorator1(self):
-        a = ConcreteDirectory("C:\\Users\\admin\\Desktop\\Test\\test")
+        a = ConcreteDirectory(MyTestCase.__TESTING_PATH)
         d = NumeratedDecorator(a)
         d = RandomizeDecorator(d)
         d.operate()
-        #for k, v in d.get_files().items():
-        #    print(k, v.num)
-
-    def test_directed_graph1(self):
-        d = {
-            "C": ("D", "E"),
-            "D": ("E",),
-            "B": ("C",),
-            "A": ("D", "B"),
-            "F": ()
-        }
-        g = directedgraph.DAG(d)
-        self.assertEqual(g.topological_sort(), ["F", "A", "B", "C", "D"])
-
-    def test_directed_graph2(self):
-        # test cycles
-        d = {
-            "A": ("B",),
-            "B": ("C",),
-            "C": ("A",)
-        }
-        g = directedgraph.DAG(d)
-
-        def cycle_break(a, b):
-            print("broke", a, b)
-
-        print(g.topological_sort(cycle_break))
 
 
 if __name__ == '__main__':

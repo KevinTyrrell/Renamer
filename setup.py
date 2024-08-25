@@ -20,7 +20,7 @@ URL = 'https://github.com/KevinTyrrell/renamer'
 EMAIL = 'KevinTearUl@gmail.com'
 AUTHOR = 'Kevin Tyrrell'
 REQUIRES_PYTHON = '>=3'
-VERSION = '1.0.0'
+VERSION = '1.0.1'
 
 # What packages are required for this module to be executed?
 REQUIRED = [
