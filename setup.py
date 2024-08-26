@@ -11,7 +11,7 @@ from shutil import rmtree
 from distutils.command.clean import clean
 
 from setuptools import find_packages, setup, Command
-import core.version as version
+import src.core.version as version
 
 # Package meta-data.
 NAME = 'renamer_kt'
@@ -180,8 +180,12 @@ setup(
         # Trove classifiers
         # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
-        "Development Status :: 4 - Beta",
+        "Development Status :: 5 - Production/Stable",
+        "Environment :: Console",
+        "Topic :: System :: Filesystems",
+        "Topic :: Utilities",
         "Intended Audience :: Developers",
+        "Intended Audience :: End Users/Desktop",
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: Implementation :: CPython',
