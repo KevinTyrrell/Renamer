@@ -117,7 +117,7 @@ class MyTestCase(unittest.TestCase):
         d = NumeratedDecorator(a)
         d = RandomizeDecorator(d)
         d.operate()
-        
+
 
 if __name__ == '__main__':
     unittest.main()
