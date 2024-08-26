@@ -16,35 +16,11 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-import unittest
-
-import sys
-from io import StringIO
-
-from core.renamer import main
+from sys import argv
 
 
-class MyTestCase(unittest.TestCase):
-    def setUp(self):
-        self.prog_stdout = StringIO()
-        sys.stdout = self.prog_stdout
-        self.test_args = [ "renamer.py" ]
-
-    def tearDown(self):
-        sys.stdout = sys.__stdout__
-
-    def get_output(self) -> str | None:
-        sys.stdout = sys.__stdout__
-        self.output = self.prog_stdout.getvalue()
-        return self.output
-
-    def test_version(self,):
-        for v in ("-v", "--version"):
-            sys.argv = self.test_args + [v]
-            try: main()
-            except SystemExit as e:
-                self.assertEquals(e.code, 0)
-
-
-if __name__ == '__main__':
-    unittest.main()
+# /-- DO NOT MODIFY /--/ [deploy Version Marker] --/
+__version__ = "v1.0.2"
+VERSION = __version__[1:]
+MAJOR, MINOR, PATCH = __version__.split(".")
+INFO = f"{argv[0]} {__version__}"

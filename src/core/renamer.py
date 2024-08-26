@@ -18,11 +18,11 @@
 
 from argparse import ArgumentParser
 
-from core.directory import ConcreteDirectory
+from core.version import __version__
 from core.decorators import *
 
 
-def main():
+def main(*args, **kwargs):
     args = ArgumentParser(description="CLI tool written in Python 3 used to systemically rename file "
                                       "in a directory while adhering to a variety of criteria")
     # Required arguments
@@ -44,6 +44,7 @@ def main():
                       help="Squelches the console output of filenames and their renamed filename")
     args.add_argument("-y", "--yes", dest="confirm", action="store_true",
                       help="Confirms the operation and makes changes to your file system according to the parameters")
+    args.add_argument("-v", "--version", action="version", version=f"%(prog)s {__version__}")
     args = args.parse_args()
 
     # Process arguments
@@ -71,4 +72,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    from sys import argv
+    main(argv[1:])
